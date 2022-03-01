@@ -1,9 +1,10 @@
-from flask import Flask, jsonify, request, send_file
+from flask import Flask, after_this_request, jsonify, request, send_file
 from flask_cors import CORS
 from werkzeug.utils import secure_filename
 import os
 import random
 import string
+import time
 
 
 app = Flask(__name__)
@@ -45,6 +46,7 @@ def upload():
             randomStr = ''.join(random.SystemRandom().choice(string.ascii_letters + string.digits) for _ in range(5))
             filename = secure_filename(randomStr)
             file.save(os.path.join(app.config["UPLOAD_FOLDER"],filename+".csv"))
+            
             return jsonify({
                 "massage":"File uploaded successfully",
                 "id" : filename
@@ -56,6 +58,12 @@ def upload():
 def download(filename):
     if request.method == "GET":
         f = os.path.join(app.config["UPLOAD_FOLDER"],filename+".csv")
+        
+        @after_this_request
+        def delete(res):
+            os.remove(f)
+            return res
+
         return  send_file(f,as_attachment=True),200
 
 
