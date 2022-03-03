@@ -1,10 +1,11 @@
+import json
 from flask import Flask, after_this_request, jsonify, request, send_file
 from flask_cors import CORS
 from werkzeug.utils import secure_filename
-import os
+import os 
 import random
 import string
-import time
+from pathlib import Path
 
 
 app = Flask(__name__)
@@ -57,14 +58,17 @@ def upload():
 @app.route("/download/<path:filename>",methods=["GET"])
 def download(filename):
     if request.method == "GET":
-        f = os.path.join(app.config["UPLOAD_FOLDER"],filename+".csv")
-        
-        @after_this_request
-        def delete(res):
-            os.remove(f)
-            return res
 
-        return  send_file(f,as_attachment=True),200
+        my_file =  Path(app.config["UPLOAD_FOLDER"],filename+".csv")
+        if my_file.is_file():
+            @after_this_request
+            def delete(res):
+                os.remove(my_file)
+                return res
+            return  send_file(my_file,as_attachment=True),200
+        return jsonify({
+            "message":"not found"
+        }),404
 
 
 if __name__ == "__main__":
