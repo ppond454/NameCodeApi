@@ -1,18 +1,36 @@
+
 import numpy as np
+import pandas as pd
 
 
-with open("file/test1.csv") as file_name:
-    arr = np.loadtxt(file_name, dtype=str)
+def convertFunc(namefile):
+    df = pd.read_csv("ref/ref.csv", dtype=str)
+    with open("file/"+namefile+".csv") as file_name:
+        arr = np.loadtxt(file_name, dtype=str)
+    result= []
+    for i in arr:
+        if len(i) == 8 :
+            i = i[:-2]
+            data= df[df["code"]== i]
+            normalize = data["province"].to_string(index=False)+"/"+data["district"].to_string(index=False)+"/"+data["Tambon"].to_string(index=False)
+            result.append(normalize)
 
-
-df = []
-l = []
-for i in arr:
-    for j in range(0, len(i), 2):
-        l.append(i[j:j+2])
-    df.append(l)
-    l = []
+        elif len(i)==6:
+            data = df[df["code"]== i]
+            normalize = str(data["province"]+"/"+data["district"]+"/"+data["Tambon"])
+            normalize = data["province"].to_string(index=False)+"/"+data["district"].to_string(index=False)+"/"+data["Tambon"].to_string(index=False)
+            result.append(normalize)
     
-for k in df : 
-    if k[0]=="50":
-        print(k[0])
+
+    pd.DataFrame({
+        "ADDRCODE" : arr,
+        "แปลงที่อยู่": result
+    }).to_csv("file/"+namefile+".csv", encoding="utf-8" )
+  
+
+
+
+
+
+
+
