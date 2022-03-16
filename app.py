@@ -50,11 +50,37 @@ def upload():
             filename = secure_filename(randomStr)
             file.save(os.path.join(
                 app.config["UPLOAD_FOLDER"], filename+".csv"))
+            if convertFunc(filename) == "success":
+                return jsonify({
+                    "massage": "File uploaded successfully",
+                    "id": filename
+                }), 201
+            elif convertFunc(filename) == "FileError":
+                os.remove(os.path.join(
+                    app.config["UPLOAD_FOLDER"], filename+".csv"))
+                return jsonify({
+                    "massage": "FileError"
+                }), 401
+            elif convertFunc(filename) == "Empty":
+                os.remove(os.path.join(
+                    app.config["UPLOAD_FOLDER"], filename+".csv"))
+                return jsonify({
+                    "massage": "File is Empty"
+                }), 401
+            elif convertFunc(filename) == "Over1Col":
+                os.remove(os.path.join(
+                    app.config["UPLOAD_FOLDER"], filename+".csv"))
+                return jsonify({
+                    "massage": "template is wrong "
+                }), 401
 
-            return jsonify({
-                "massage": "File uploaded successfully",
-                "id": filename
-            }), 201
+            else:
+                os.remove(os.path.join(
+                    app.config["UPLOAD_FOLDER"], filename+".csv"))
+                return jsonify({
+                    "massage": "Your ADDRCODE is wrong"
+                }), 401
+
         else:
             return jsonify({'massage': 'Allowed file types is csv'}), 400
 
@@ -64,7 +90,6 @@ def download(filename):
     if request.method == "GET":
         my_file = Path(app.config["UPLOAD_FOLDER"], filename+".csv")
         if my_file.is_file():
-            convertFunc(filename)
 
             @after_this_request
             def delete(res):
