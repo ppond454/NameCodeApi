@@ -60,26 +60,26 @@ def upload():
                     app.config["UPLOAD_FOLDER"], filename+".csv"))
                 return jsonify({
                     "massage": "FileError"
-                }), 401
+                }), 403
             elif convertFunc(filename) == "Empty":
                 os.remove(os.path.join(
                     app.config["UPLOAD_FOLDER"], filename+".csv"))
                 return jsonify({
                     "massage": "File is Empty"
-                }), 401
+                }), 403
             elif convertFunc(filename) == "Over1Col":
                 os.remove(os.path.join(
                     app.config["UPLOAD_FOLDER"], filename+".csv"))
                 return jsonify({
-                    "massage": "template is wrong "
-                }), 401
+                    "massage": "please put a data olny first coloumn "
+                }), 403
 
             else:
                 os.remove(os.path.join(
                     app.config["UPLOAD_FOLDER"], filename+".csv"))
                 return jsonify({
                     "massage": "Your ADDRCODE is wrong"
-                }), 401
+                }), 403
 
         else:
             return jsonify({'massage': 'Allowed file types is csv'}), 400
