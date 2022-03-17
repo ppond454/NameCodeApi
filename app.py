@@ -36,13 +36,13 @@ def upload():
 
         if "file" not in request.files:
             return jsonify({
-                "massage": "file is required"
+                "message": "file is required"
             }), 400
 
         file = request.files['file']
         if file.filename == "":
             return jsonify({
-                "massage": "No file selected for uploading"
+                "message": "No file selected for uploading"
             }), 400
         if file and allowed_file(file.filename):
             randomStr = ''.join(random.SystemRandom().choice(
@@ -52,37 +52,37 @@ def upload():
                 app.config["UPLOAD_FOLDER"], filename+".csv"))
             if convertFunc(filename) == "success":
                 return jsonify({
-                    "massage": "File uploaded successfully",
+                    "message": "File uploaded successfully",
                     "id": filename
                 }), 201
             elif convertFunc(filename) == "FileError":
                 os.remove(os.path.join(
                     app.config["UPLOAD_FOLDER"], filename+".csv"))
                 return jsonify({
-                    "massage": "FileError"
+                    "message": "FileError"
                 }), 400
             elif convertFunc(filename) == "Empty":
                 os.remove(os.path.join(
                     app.config["UPLOAD_FOLDER"], filename+".csv"))
                 return jsonify({
-                    "massage": "File is Empty"
+                    "message": "File is Empty"
                 }), 400
             elif convertFunc(filename) == "Over1Col":
                 os.remove(os.path.join(
                     app.config["UPLOAD_FOLDER"], filename+".csv"))
                 return jsonify({
-                    "massage": "please put a data olny first coloumn "
+                    "message": "please put a data olny first coloumn "
                 }), 400
 
             else:
                 os.remove(os.path.join(
                     app.config["UPLOAD_FOLDER"], filename+".csv"))
                 return jsonify({
-                    "massage": "Your ADDRCODE is wrong"
+                    "message": "Your ADDRCODE is wrong"
                 }), 403
 
         else:
-            return jsonify({'massage': 'Allowed file types is csv'}), 400
+            return jsonify({'message': 'Allowed file types is csv'}), 400
 
 
 @app.route("/download/<path:filename>", methods=["GET"])
