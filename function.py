@@ -11,11 +11,10 @@ def encodeFile(fpath):
     for encoding in encoding_list:
         worked = True
         try:
-            df = pd.read_csv(fpath, dtype=str, encoding=encoding)
+            df = pd.read_csv(fpath, dtype=str, header=None, encoding=encoding)
         except:
             worked = False
         if worked:
-            print(encoding)
             return df
 
 
@@ -23,8 +22,7 @@ def encodeFile(fpath):
 def convertFunc(namefile):
     isNotValidate = False
     fpath = str("file/"+namefile+".csv")
-    # with open("file/"+namefile+".csv") as file_name:
-    #     arr = np.loadtxt(file_name, dtype=str)
+
     isEmpty = os.path.isfile(fpath) and os.path.getsize(fpath) > 0
 
     if not isEmpty:
@@ -45,13 +43,16 @@ def convertFunc(namefile):
         print("Over1Col")
         isNotValidate = True
         return "Over1Col"
+
     code = []
     result = []
     dfRef = pd.read_csv("ref/ref.csv", dtype=str)
 
     for i in df.iloc[:, 0]:
         print(i)
-
+        if not i.isnumeric() : 
+            isNotValidate = True
+            break
         if len(i) == 8:
             i = i[:-2]
             data = dfRef[dfRef["code"] == i]
