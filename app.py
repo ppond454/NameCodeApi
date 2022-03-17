@@ -60,19 +60,19 @@ def upload():
                     app.config["UPLOAD_FOLDER"], filename+".csv"))
                 return jsonify({
                     "massage": "FileError"
-                }), 403
+                }), 400
             elif convertFunc(filename) == "Empty":
                 os.remove(os.path.join(
                     app.config["UPLOAD_FOLDER"], filename+".csv"))
                 return jsonify({
                     "massage": "File is Empty"
-                }), 403
+                }), 400
             elif convertFunc(filename) == "Over1Col":
                 os.remove(os.path.join(
                     app.config["UPLOAD_FOLDER"], filename+".csv"))
                 return jsonify({
                     "massage": "please put a data olny first coloumn "
-                }), 403
+                }), 400
 
             else:
                 os.remove(os.path.join(
